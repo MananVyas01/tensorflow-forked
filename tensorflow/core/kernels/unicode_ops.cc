@@ -22,7 +22,6 @@ limitations under the License.
 #include <vector>
 
 #include "unsupported/Eigen/CXX11/Tensor"  // from @eigen_archive
-#include "unicode/appendable.h"  // from @icu
 #include "unicode/schriter.h"  // from @icu
 #include "unicode/uchar.h"  // from @icu
 #include "unicode/ucnv.h"  // from @icu
@@ -559,7 +558,6 @@ class UnicodeEncodeOp : public OpKernel {
     // Loop through our split dimension to create a new string at each split.
     for (int i = 1; i < input_splits_flat.size(); ++i) {
       icu::UnicodeString unicode_string;
-      icu::UnicodeStringAppendable appendable_unicode_string(unicode_string);
       OP_REQUIRES(
           context, input_splits_flat(i - 1) <= input_splits_flat(i),
           errors::InvalidArgument(
@@ -580,7 +578,7 @@ class UnicodeEncodeOp : public OpKernel {
             code_point = error_options_.subst;
           }
         }
-        appendable_unicode_string.appendCodePoint(code_point);
+        unicode_string.append(code_point);
       }
       // Encode our string and save in the output.
       tstring result;
