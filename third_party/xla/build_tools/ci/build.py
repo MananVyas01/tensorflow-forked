@@ -191,6 +191,8 @@ class Build:
         for k, v in self.override_repository.items()
     ]
 
+    is_ci_flag = [
+        "--//xla/tsl:ci_build=True"] if subcommand in ("build", "test") else []
     tag_filters = [build_tag_filters, test_tag_filters]
     all_options = (
         tag_filters
@@ -200,6 +202,7 @@ class Build:
         + repo_env
         + override_repository
         + options
+        + is_ci_flag
         + list(extra_options)
     )
     return ["bazel", subcommand, *all_options, "--", *self.target_patterns]
